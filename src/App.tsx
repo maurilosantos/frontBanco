@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Button, TextField, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 
-
 function App() {
   const [dataInicio, setDataInicio] = useState('');
   const [dataFim, setDataFim] = useState('');
@@ -24,46 +23,37 @@ function App() {
     const apiUrl = 'http://localhost:8080/extrato';
 
     const params = {
-      numeroConta: null, 
-      dataInicio,
-      dataFim,
-      nomeResponsavel: null,
+      numeroConta: null,
+      dataInicio: dataInicio ? `${dataInicio}T00:00:00Z` : null,
+      dataFim: dataFim ? `${dataFim}T23:59:59Z` : null,
+      nomeOperador: nomeOperador || null,
     };
-  
+
     axios.get(apiUrl, { params })
-      .then((response) => {
-        const extrato = response.data;
-        
-      })
-      .catch((error) => {
-        // Tratamento de erros
-        console.error(error);
-      });
-  };
+    .then((response) => {
+      const extrato = response.data;
+      console.log(extrato); // Exibe a resposta no console
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
 
   return (
     <div className="App">
-      
       <Stack spacing={2} direction="row">
-      <Typography>Data De Início: </Typography>
-        <TextField
-          type="date"
-          value={dataInicio}
-          onChange={handleDataInicioChange}
-        />
+        <Typography>Data De Início: </Typography>
+        <TextField type="date" value={dataInicio} onChange={handleDataInicioChange} />
         <Typography>Data De Fim: </Typography>
-        <TextField
-         
-          type="date"
-          value={dataFim}
-          onChange={handleDataFimChange}
-        />
+        <TextField type="date" value={dataFim} onChange={handleDataFimChange} />
         <TextField
           label="Nome do operador"
           value={nomeOperador}
           onChange={handleNomeOperadorChange}
         />
-        <Button variant="contained" onClick={handleSearch}>Pesquisar</Button>
+        <Button variant="contained" onClick={handleSearch}>
+          Pesquisar
+        </Button>
       </Stack>
     </div>
   );
